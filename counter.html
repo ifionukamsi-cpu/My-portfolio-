@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Counter</title>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background-color: #1e293b;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      text-align: center;
+      width: 85%;
+      max-width: 320px;
+    }
+
+    #count {
+      font-size: 4rem;
+      font-weight: 800;
+      margin: 1rem 0 2rem 0;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    button.reset {
+      background-color: #64748b;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Counter App</h2>
+    <div id="count">0</div>
+    <div class="btn-group">
+      <button id="dec-btn">-</button>
+      <button id="reset-btn" class="reset">Reset</button>
+      <button id="inc-btn">+</button>
+    </div>
+  </div>
+
+  <script>
+    var count = 0;
+    var countDisplay = document.getElementById('count');
+    var incBtn = document.getElementById('inc-btn');
+    var decBtn = document.getElementById('dec-btn');
+    var resetBtn = document.getElementById('reset-btn');
+
+    function updateDisplay() {
+      countDisplay.innerText = count;
+      if (count > 0) countDisplay.style.color = '#4ade80';
+      else if (count < 0) countDisplay.style.color = '#f87171';
+      else countDisplay.style.color = '#f8fafc';
+    }
+
+    incBtn.onclick = function() { count++; updateDisplay(); };
+    decBtn.onclick = function() { count--; updateDisplay(); };
+    resetBtn.onclick = function() { count = 0; updateDisplay(); };
+  </script>
+
+</body>
+</html>

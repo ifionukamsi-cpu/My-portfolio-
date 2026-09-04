@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme Switcher</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --btn-bg: #38bdf8;
+      --btn-text: #0f172a;
+    }
+
+    .light-mode {
+      --bg-color: #f8fafc;
+      --card-bg: #e2e8f0;
+      --text-color: #0f172a;
+      --btn-bg: #0284c7;
+      --btn-text: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      width: 85%;
+      max-width: 350px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 id="heading">Dark Mode 🌙</h1>
+    <p>Tap the button below to toggle theme modes.</p>
+    <button id="toggle-btn">Switch to Light Mode</button>
+  </div>
+
+  <script>
+    var btn = document.getElementById('toggle-btn');
+    var heading = document.getElementById('heading');
+
+    btn.onclick = function() {
+      document.body.classList.toggle('light-mode');
+      if (document.body.classList.contains('light-mode')) {
+        heading.innerText = "Light Mode ☀️";
+        btn.innerText = "Switch to Dark Mode";
+      } else {
+        heading.innerText = "Dark Mode 🌙";
+        btn.innerText = "Switch to Light Mode";
+      }
+    };
+  </script>
+
+</body>
+</html>
