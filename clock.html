@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock & Stopwatch</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .display {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00e676;
+      font-family: monospace;
+      margin-bottom: 15px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:active {
+      opacity: 0.7;
+    }
+
+    .btn-start { background-color: #00e676; color: #121212; }
+    .btn-pause { background-color: #ffb300; color: #121212; }
+    .btn-reset { background-color: #ff5252; color: #ffffff; }
+
+    .nav-link {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .nav-link a {
+      color: #00e676;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Digital Clock Section -->
+    <div class="card">
+      <h2>Digital Clock</h2>
+      <div id="clock-display" class="display">00:00:00 AM</div>
+    </div>
+
+    <!-- Stopwatch Section -->
+    <div class="card">
+      <h2>Stopwatch</h2>
+      <div id="stopwatch-display" class="display">00:00:00</div>
+      <div class="buttons">
+        <button class="btn-start" onclick="startStopwatch()">Start</button>
+        <button class="btn-pause" onclick="pauseStopwatch()">Pause</button>
+        <button class="btn-reset" onclick="resetStopwatch()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Link back to Portfolio -->
+    <div class="nav-link">
+      <a href="index.html">← Back to Portfolio</a>
+    </div>
+  </div>
+
+  <script>
+    // --- Digital Clock Logic ---
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12; // convert '0' to '12'
+      const formattedHours = String(hours).padStart(2, '0');
+
+      document.getElementById('clock-display').textContent = 
+        `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    // Update the clock every 1 second (1000 ms)
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call to display time immediately
+
+    // --- Stopwatch Logic ---
+    let stopwatchTimer = null;
+    let secondsElapsed = 0;
+
+    function formatTime(totalSeconds) {
+      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
+    }
+
+    function startStopwatch() {
+      if (stopwatchTimer !== null) return; // Prevent multiple intervals
+      stopwatchTimer = setInterval(() => {
+        secondsElapsed++;
+        document.getElementById('stopwatch-display').textContent = formatTime(secondsElapsed);
+      }, 1000);
+    }
+
+    function pauseStopwatch() {
+      clearInterval(stopwatchTimer);
+      stopwatchTimer = null;
+    }
+
+    function resetStopwatch() {
+      pauseStopwatch();
+      secondsElapsed = 0;
+      document.getElementById('stopwatch-display').textContent = "00:00:00";
+    }
+  </script>
+</body>
+</html>
