@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Dev Quiz App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .quiz-card {
+      width: 100%;
+      max-width: 400px;
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .question {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .btn-option {
+      width: 100%;
+      padding: 12px 15px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      border: 2px solid #333;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-option:active {
+      opacity: 0.8;
+    }
+
+    .correct { background-color: #00e676 !important; color: #121212 !important; border-color: #00e676 !important; }
+    .incorrect { background-color: #ff5252 !important; color: #ffffff !important; border-color: #ff5252 !important; }
+
+    .btn-next {
+      width: 100%;
+      padding: 12px;
+      background-color: #00e676;
+      color: #121212;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+    }
+
+    .results {
+      text-align: center;
+    }
+
+    .results h2 {
+      font-size: 1.8rem;
+      color: #00e676;
+      margin-bottom: 10px;
+    }
+
+    .results p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+
+    .btn-restart {
+      padding: 12px 24px;
+      background-color: #00e676;
+      color: #121212;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .nav-link {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .nav-link a {
+      color: #00e676;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-card">
+    <div id="quiz-box">
+      <div class="header">
+        <span id="question-tracker">Question 1 of 4</span>
+        <span id="score-tracker">Score: 0</span>
+      </div>
+
+      <div class="question" id="question-text">Loading question...</div>
+
+      <div class="options" id="options-container"></div>
+
+      <button id="next-btn" class="btn-next" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="results-box" class="results" style="display: none;">
+      <h2>Quiz Completed! 🎉</h2>
+      <p id="final-score">You scored 0 out of 4</p>
+      <button class="btn-restart" onclick="restartQuiz()">Try Again</button>
+    </div>
+
+    <div class="nav-link">
+      <a href="index.html">← Back to Portfolio</a>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What does HTML stand for?",
+        options: [
+          "Hyper Text Markup Language",
+          "High Text Machine Language",
+          "Hyper Transfer Mode Language",
+          "Home Tool Markup Language"
+        ],
+        correct: 0
+      },
+      {
+        question: "Which CSS property changes text color?",
+        options: ["text-style", "font-color", "color", "background-color"],
+        correct: 2
+      },
+      {
+        question: "Which JavaScript keyword declares a variable that cannot be reassigned?",
+        options: ["var", "let", "const", "static"],
+        correct: 2
+      },
+      {
+        question: "How do you select an element with id='app' in JavaScript?",
+        options: [
+          "document.querySelector('.app')",
+          "document.getElementById('app')",
+          "document.getElementByName('app')",
+          "document.select('#app')"
+        ],
+        correct: 1
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionTracker = document.getElementById('question-tracker');
+    const scoreTracker = document.getElementById('score-tracker');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const nextBtn = document.getElementById('next-btn');
+    const quizBox = document.getElementById('quiz-box');
+    const resultsBox = document.getElementById('results-box');
+    const finalScore = document.getElementById('final-score');
+
+    function loadQuestion() {
+      nextBtn.style.display = 'none';
+      optionsContainer.innerHTML = '';
+
+      const currentData = quizData[currentQuestionIndex];
+      questionTracker.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+      questionText.textContent = currentData.question;
+
+      currentData.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.classList.add('btn-option');
+        button.textContent = option;
+        button.onclick = () => selectOption(index, button);
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    function selectOption(selectedIndex, selectedBtn) {
+      const currentData = quizData[currentQuestionIndex];
+      const allButtons = optionsContainer.children;
+
+      // Disable all option buttons after click
+      for (let btn of allButtons) {
+        btn.disabled = true;
+      }
+
+      if (selectedIndex === currentData.correct) {
+        selectedBtn.classList.add('correct');
+        score++;
+        scoreTracker.textContent = `Score: ${score}`;
+      } else {
+        selectedBtn.classList.add('incorrect');
+        allButtons[currentData.correct].classList.add('correct');
+      }
+
+      nextBtn.style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      quizBox.style.display = 'none';
+      resultsBox.style.display = 'block';
+      finalScore.textContent = `You scored ${score} out of ${quizData.length}`;
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      scoreTracker.textContent = `Score: ${score}`;
+      resultsBox.style.display = 'none';
+      quizBox.style.display = 'block';
+      loadQuestion();
+    }
+
+    // Initialize Quiz
+    loadQuestion();
+  </script>
+</body>
+</html>
